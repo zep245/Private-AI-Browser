@@ -1,0 +1,8 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Private AI
+Comment=Private AI desktop application
+Exec=/opt/private-ai/PrivateAI
+Terminal=false
+Categories=Utility;

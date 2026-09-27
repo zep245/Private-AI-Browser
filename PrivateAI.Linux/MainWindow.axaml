@@ -1,0 +1,142 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    x:Class="PrivateAI.Linux.MainWindow"
+    Width="820"
+    Height="590"
+    MinWidth="700"
+    MinHeight="500"
+    SystemDecorations="None"
+    Background="Transparent"
+    TransparencyLevelHint="Transparent">
+
+    <Border
+        Margin="6"
+        CornerRadius="14"
+        Background="#E6111317"
+        BorderBrush="#30FFFFFF"
+        BorderThickness="1">
+
+        <Grid RowDefinitions="48,48,*">
+
+            <!-- TITLE BAR -->
+
+            <Border
+                Grid.Row="0"
+                Background="Transparent"
+                PointerPressed="TitleBar_PointerPressed">
+
+                <Grid>
+
+                    <TextBlock
+                        Text="Private AI"
+                        Margin="18,0,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="#F2F2F2"/>
+
+                    <Button
+                        Content="×"
+                        Width="34"
+                        Height="34"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        Margin="0,0,8,0"
+                        Padding="0"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="#D0D0D0"
+                        FontSize="25"
+                        Click="CloseButton_Click"/>
+
+                </Grid>
+
+            </Border>
+
+
+            <!-- PROVIDER SWITCHER -->
+
+            <Border
+                Grid.Row="1"
+                Background="Transparent"
+                Padding="14,6">
+
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="7">
+
+                    <Button
+                        Content="ChatGPT"
+                        Width="94"
+                        Height="36"
+                        Background="#15FFFFFF"
+                        BorderBrush="#25FFFFFF"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Foreground="#EEEEEE"
+                        FontSize="13"
+                        Click="ChatGPT_Click"/>
+
+                    <Button
+                        Content="Claude"
+                        Width="94"
+                        Height="36"
+                        Background="#15FFFFFF"
+                        BorderBrush="#25FFFFFF"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Foreground="#EEEEEE"
+                        FontSize="13"
+                        Click="Claude_Click"/>
+
+                    <Button
+                        Content="Gemini"
+                        Width="94"
+                        Height="36"
+                        Background="#15FFFFFF"
+                        BorderBrush="#25FFFFFF"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Foreground="#EEEEEE"
+                        FontSize="13"
+                        Click="Gemini_Click"/>
+
+                    <Button
+                        Content="Perplexity"
+                        Width="94"
+                        Height="36"
+                        Background="#15FFFFFF"
+                        BorderBrush="#25FFFFFF"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Foreground="#EEEEEE"
+                        FontSize="13"
+                        Click="Perplexity_Click"/>
+
+                </StackPanel>
+
+            </Border>
+
+
+            <!-- BROWSER -->
+
+            <Border
+                Grid.Row="2"
+                Margin="7,3,7,7"
+                Background="#050608"
+                CornerRadius="8"
+                ClipToBounds="True">
+
+                <NativeWebView
+                    x:Name="Browser"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"/>
+
+            </Border>
+
+        </Grid>
+
+    </Border>
+
+</Window>

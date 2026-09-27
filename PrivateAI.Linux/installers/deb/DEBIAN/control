@@ -1,0 +1,8 @@
+Package: private-ai
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: amd64
+Maintainer: Private AI
+Description: Private AI desktop application
+ A compact desktop application for accessing AI web services.

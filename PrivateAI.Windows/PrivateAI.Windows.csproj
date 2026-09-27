@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+
+    <AssemblyName>PrivateAI.Windows</AssemblyName>
+    <RootNamespace>PrivateAI.Windows</RootNamespace>
+
+
+    <AssemblyTitle>Private AI</AssemblyTitle>
+    <Product>Private AI</Product>
+    <Company>Private AI</Company>
+    <Description>Private AI desktop application</Description>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference
+      Include="Microsoft.Web.WebView2"
+      Version="1.0.3595.46" />
+  </ItemGroup>
+
+</Project>

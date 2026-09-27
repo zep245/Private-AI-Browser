@@ -1,0 +1,18 @@
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.userosscache
+*.pdb
+
+# Temporary Linux package build files
+PrivateAI.Linux/installers/deb/build/
+PrivateAI.Linux/installers/rpm/rpmbuild/
+
+# Visual Studio Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
