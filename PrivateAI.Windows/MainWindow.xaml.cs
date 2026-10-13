@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -152,37 +152,62 @@ public partial class MainWindow : Window
                 _webViewEnvironment);
 
 
-            // Keep the microphone/dictation control's cursor as a normal arrow.
-            // The AI sites render inside WebView2, so apply this before each page loads.
+            // Force the cursor to the normal arrow over ChatGPT's microphone/dictation control.
+            // ChatGPT changes its DOM labels periodically, so cover its known test id and
+            // detect tooltip/accessibility text on the button and its descendants.
             await Browser.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync("""
                 (() => {
-                    const isMicControl = (el) => {
+                    const micSelector = [
+                        '[data-testid="composer-voice-button"]',
+                        '[data-testid*="voice"]',
+                        '[aria-label*="dictation" i]',
+                        '[title*="dictation" i]',
+                        '[aria-label*="microphone" i]',
+                        '[title*="microphone" i]',
+                        '[aria-label*="voice input" i]',
+                        '[title*="voice input" i]'
+                    ].join(',');
+                    const micWords = /dictat|microphone|voice input|start voice|speech to text/i;
+                    const isMic = (el) => {
                         if (!el || el.nodeType !== 1) return false;
-                        const description = [
-                            el.getAttribute('aria-label'),
-                            el.getAttribute('title'),
-                            el.getAttribute('data-testid'),
-                            el.getAttribute('data-tooltip-content')
-                        ].filter(Boolean).join(' ').toLowerCase();
-                        return /dictat|microphone|voice input|start voice|speech to text/.test(description);
+                        if (el.matches(micSelector)) return true;
+                        const text = [el.getAttribute('aria-label'), el.getAttribute('title'),
+                            el.getAttribute('data-testid'), el.getAttribute('data-tooltip-content'),
+                            el.getAttribute('data-state')].filter(Boolean).join(' ');
+                        return micWords.test(text);
                     };
-                    const fix = (root = document) => {
-                        const candidates = [];
-                        if (root.nodeType === 1) candidates.push(root);
-                        if (root.querySelectorAll) candidates.push(...root.querySelectorAll('button,[role="button"],[aria-label],[title]'));
-                        for (const el of candidates) {
-                            if (!isMicControl(el)) continue;
-                            el.style.setProperty('cursor', 'default', 'important');
-                            el.querySelectorAll('*').forEach(child => child.style.setProperty('cursor', 'default', 'important'));
+                    const forceArrow = (el) => {
+                        if (!el || el.nodeType !== 1) return;
+                        const control = el.closest('button,[role="button"], [data-testid="composer-voice-button"]') || el;
+                        if (!isMic(control) && !isMic(el) && !(control.querySelector && control.querySelector(micSelector))) return;
+                        for (const node of [control, ...(control.querySelectorAll ? control.querySelectorAll('*') : [])]) {
+                            node.style.setProperty('cursor', 'default', 'important');
                         }
                     };
-                    fix();
-                    new MutationObserver(records => {
-                        for (const record of records) {
-                            if (record.type === 'childList') record.addedNodes.forEach(node => { if (node.nodeType === 1) fix(node); });
-                            else if (record.type === 'attributes') fix(record.target);
+                    const fixTree = (root = document) => {
+                        if (root.nodeType === 1) forceArrow(root);
+                        if (root.querySelectorAll) {
+                            root.querySelectorAll(micSelector).forEach(forceArrow);
+                            root.querySelectorAll('button,[role="button"],[aria-label],[title]').forEach(el => {
+                                if (isMic(el)) forceArrow(el);
+                            });
                         }
-                    }).observe(document.documentElement, { subtree: true, childList: true, attributes: true, attributeFilter: ['aria-label','title','data-testid','data-tooltip-content'] });
+                    };
+                    // Apply both on DOM updates and at hover time, after site styles have loaded.
+                    const install = () => {
+                        fixTree();
+                        document.addEventListener('pointerover', e => forceArrow(e.target), true);
+                        document.addEventListener('mouseover', e => forceArrow(e.target), true);
+                        new MutationObserver(records => {
+                            for (const record of records) {
+                                if (record.type === 'childList') record.addedNodes.forEach(node => { if (node.nodeType === 1) fixTree(node); });
+                                else if (record.type === 'attributes') forceArrow(record.target);
+                            }
+                        }).observe(document.documentElement, {subtree:true, childList:true, attributes:true,
+                            attributeFilter:['aria-label','title','data-testid','data-tooltip-content','class','style']});
+                    };
+                    if (document.documentElement) install();
+                    else document.addEventListener('DOMContentLoaded', install, {once:true});
                 })();
                 """);
 

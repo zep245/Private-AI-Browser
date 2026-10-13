@@ -15,4 +15,4 @@ The build uses the .NET 10 SDK and produces a self-contained `win-x64` publish. 
 
 ## Cursor change
 
-The app injects a small script into each WebView2 page. It sets the cursor to the standard arrow on controls whose accessible label/title identifies dictation or microphone input. Website markup can change, so verify the microphone hover on ChatGPT after building. This changes only the cursor appearance; it does not disable microphone functionality.
+The app injects a small script into each WebView2 page. It targets ChatGPT’s known `composer-voice-button` test ID as well as microphone/dictation labels, and re-applies the standard arrow on pointer hover and DOM updates. Website markup can change, so verify the microphone hover on ChatGPT after building. The ZIP intentionally does not include a stale prebuilt installer; generate a fresh installer with the workflow above. This changes only the cursor appearance; it does not disable microphone functionality.
