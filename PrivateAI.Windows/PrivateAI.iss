@@ -1,10 +1,10 @@
-#define MyAppName "Private AI"
+﻿#define MyAppName "Private AI"
 #define MyAppVersion "1.0.0"
 #define MyAppPublisher "Private AI"
 #define MyAppExeName "PrivateAI.Windows.exe"
 
 [Setup]
-AppId={{8A8B2C6E-2F75-4F13-A8B4-PRIVATEAI001}}
+AppId={{8A8B2C6E-2F75-4F13-A8B4-5A1D9C2E7001}}
 
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}

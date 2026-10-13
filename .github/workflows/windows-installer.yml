@@ -1,0 +1,61 @@
+name: Build Windows app and Inno Setup installer
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'PrivateAI.Windows/**'
+      - '.github/workflows/windows-installer.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Publish Windows x64 app
+        shell: pwsh
+        run: >-
+          dotnet publish .\PrivateAI.Windows\PrivateAI.Windows.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          -p:PublishSingleFile=false
+          -p:EnableCompressionInSingleFile=false
+          -o .\PrivateAI.Windows\bin\Release\net10.0-windows\win-x64\publish
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+
+      - name: Compile installer
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force .\PrivateAI.Windows\installer | Out-Null
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" .\PrivateAI.Windows\PrivateAI.iss
+          if ($LASTEXITCODE -ne 0) { throw "Inno Setup compilation failed with exit code $LASTEXITCODE" }
+
+      - name: Upload Windows publish files
+        uses: actions/upload-artifact@v4
+        with:
+          name: PrivateAI-Windows-x64
+          path: PrivateAI.Windows/bin/Release/net10.0-windows/win-x64/publish/**
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Upload Inno Setup installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: PrivateAI-Setup
+          path: PrivateAI.Windows/installer/PrivateAI-Setup.exe
+          if-no-files-found: error
+          retention-days: 14
